@@ -2,6 +2,7 @@
 {
     public interface ICurrentUserService
     {
+        Guid? TenantId { get; }
         AppUserContext? GetUserContext();
     }
 }

@@ -15,6 +15,20 @@ namespace ExemploTenantIdPorUsuario.Web.Services
             this.httpContextAccessor = httpContextAccessor;
         }
 
+        public Guid? TenantId
+        {
+            get
+            {
+                string? tenantId = httpContextAccessor?.HttpContext?.User?.FindFirstValue("TenantId");
+                if (tenantId != null)
+                {
+                    return Guid.Parse(tenantId);
+                }
+
+                return null;
+            }
+        }
+
         public AppUserContext? GetUserContext()
         {
             if (httpContextAccessor?.HttpContext?.User?.Identity == null)

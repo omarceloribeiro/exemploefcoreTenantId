@@ -20,16 +20,20 @@ namespace ExemploTenantIdPorUsuario.Web.Data
         public DbSet<Categoria> Categorias { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            if (currentUserService != null)
-            {
-                var appUserContext = currentUserService.GetUserContext();
-                if (appUserContext != null && appUserContext.TenantId.HasValue)
-                {
-                    Guid tenantId = appUserContext.TenantId.Value;
-                    builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == tenantId);
-                }
+            // explicacao: se passar uma propriedade com get; para o valor de comparacao, o ef vai acionar o get no momento da chamada, mesmo que seja null incialmente, ele vai chamar o get novamente e pegar o valor no momento da query
+            // ja se primeiro atribuir esse valor para uma variavel, e depois passar na condicao, dai o ef core vai deixar chumbado em toda vida da aplicacao
+            builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == currentUserService.TenantId);
+
+            //if (currentUserService != null)
+            //{
+            //    var appUserContext = currentUserService.GetUserContext();
+            //    if (appUserContext != null && appUserContext.TenantId.HasValue)
+            //    {
+            //        Guid tenantId = appUserContext.TenantId.Value;
+            //        builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == tenantId);
+            //    }
                 
-            }
+            //}
   
 
             base.OnModelCreating(builder);
