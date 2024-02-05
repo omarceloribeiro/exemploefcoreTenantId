@@ -1,6 +1,9 @@
 # exemploefcoreTenantId
 Exemplo efcore tenant Id
 
+obs: para criar os registros, acessar a url /Categorias 
+(faltou adicionar o link na master)
+
 
 # passos
 - registrar uma usuario 1 (um novo tenant id é criado para cada usuario)
