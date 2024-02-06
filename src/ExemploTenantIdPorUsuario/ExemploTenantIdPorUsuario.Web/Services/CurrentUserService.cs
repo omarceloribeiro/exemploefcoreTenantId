@@ -29,15 +29,15 @@ namespace ExemploTenantIdPorUsuario.Web.Services
             }
         }
 
-        public AppUserContext? GetUserContext()
+        public AppUserContext GetUserContext()
         {
             if (httpContextAccessor?.HttpContext?.User?.Identity == null)
-                return null;
+                return new AppUserContext();
 
             var user = httpContextAccessor.HttpContext.User;
 
             if (!user.Identity.IsAuthenticated)
-                return null;
+                return new AppUserContext();
 
             AppUserContext result = new AppUserContext()
             {

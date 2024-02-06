@@ -23,7 +23,7 @@ namespace ExemploTenantIdPorUsuario.Web.Data
             // explicacao: se passar uma propriedade com get; para o valor de comparacao, o ef vai acionar o get no momento da chamada, mesmo que seja null incialmente, ele vai chamar o get novamente e pegar o valor no momento da query
             // ja se primeiro atribuir esse valor para uma variavel, e depois passar na condicao, dai o ef core vai deixar chumbado em toda vida da aplicacao
 
-            int opcao = 1;
+            int opcao = 4;
 
             if (opcao == 1)
             {
@@ -47,6 +47,12 @@ namespace ExemploTenantIdPorUsuario.Web.Data
                     Guid tenantId = appUserContext.TenantId.Value;
                     builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == tenantId);
                 }
+            }
+
+            if (opcao == 4)
+            {
+                // tambem funciona chamando uma funcao direto e em seguinda chamando a propriedade.resumindo precisa ser uma funcao
+                builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == currentUserService.GetUserContext().TenantId);
             }
 
             base.OnModelCreating(builder);
