@@ -9,7 +9,7 @@ namespace ExemploTenantIdPorUsuario.Web.Data
     {
         private readonly ICurrentUserService currentUserService;
 
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, 
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,
             ICurrentUserService currentUserService
             )
             : base(options)
@@ -22,26 +22,39 @@ namespace ExemploTenantIdPorUsuario.Web.Data
         {
             // explicacao: se passar uma propriedade com get; para o valor de comparacao, o ef vai acionar o get no momento da chamada, mesmo que seja null incialmente, ele vai chamar o get novamente e pegar o valor no momento da query
             // ja se primeiro atribuir esse valor para uma variavel, e depois passar na condicao, dai o ef core vai deixar chumbado em toda vida da aplicacao
-            builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == currentUserService.TenantId);
 
-            //if (currentUserService != null)
-            //{
-            //    var appUserContext = currentUserService.GetUserContext();
-            //    if (appUserContext != null && appUserContext.TenantId.HasValue)
-            //    {
-            //        Guid tenantId = appUserContext.TenantId.Value;
-            //        builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == tenantId);
-            //    }
-                
-            //}
-  
+            int opcao = 1;
+
+            if (opcao == 1)
+            {
+                // nao funciona
+                Guid? teste = currentUserService.TenantId;
+                builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == teste);
+            }
+
+            if (opcao == 2)
+            {
+                // funciona
+                builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == currentUserService.TenantId);
+            }
+
+            if (opcao == 3)
+            {
+                // nao funciona
+                var appUserContext = currentUserService.GetUserContext();
+                if (appUserContext != null && appUserContext.TenantId.HasValue)
+                {
+                    Guid tenantId = appUserContext.TenantId.Value;
+                    builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == tenantId);
+                }
+            }
 
             base.OnModelCreating(builder);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            
+
             base.OnConfiguring(optionsBuilder);
         }
 
@@ -49,9 +62,9 @@ namespace ExemploTenantIdPorUsuario.Web.Data
         {
             var addedEntities = ChangeTracker.Entries().Where(x => x.State == EntityState.Added).ToList();
 
-            addedEntities.ForEach(entityEntry => 
+            addedEntities.ForEach(entityEntry =>
             {
-                
+
 
                 if (entityEntry.Entity is Categoria categoria)
                 {
