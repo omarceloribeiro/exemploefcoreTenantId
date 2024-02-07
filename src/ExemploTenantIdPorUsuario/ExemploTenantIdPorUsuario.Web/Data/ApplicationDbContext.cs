@@ -8,6 +8,7 @@ namespace ExemploTenantIdPorUsuario.Web.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         private readonly ICurrentUserService currentUserService;
+        private Guid? tenantId;
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options,
             ICurrentUserService currentUserService
@@ -15,6 +16,7 @@ namespace ExemploTenantIdPorUsuario.Web.Data
             : base(options)
         {
             this.currentUserService = currentUserService;
+            this.tenantId = currentUserService.TenantId;
         }
 
         public DbSet<Categoria> Categorias { get; set; }
@@ -48,11 +50,25 @@ namespace ExemploTenantIdPorUsuario.Web.Data
                     builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == tenantId);
                 }
             }
-
             if (opcao == 4)
+            {
+                // nao funciona
+                AppUserContext appUserContext = currentUserService.GetUserContext();
+                builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == appUserContext.TenantId);
+                
+            }
+
+            if (opcao == 5)
             {
                 // tambem funciona chamando uma funcao direto e em seguinda chamando a propriedade.resumindo precisa ser uma funcao
                 builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == currentUserService.GetUserContext().TenantId);
+            }
+
+            if (opcao == 6)
+            {
+                // variavel (sem get) no contexto da classe
+                // nao funciona
+                builder.Entity<Categoria>().HasQueryFilter(x => x.TenantId == tenantId);
             }
 
             base.OnModelCreating(builder);
