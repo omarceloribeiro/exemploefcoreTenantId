@@ -25,7 +25,7 @@ namespace ExemploTenantIdPorUsuario.Web.Data
             // explicacao: se passar uma propriedade com get; para o valor de comparacao, o ef vai acionar o get no momento da chamada, mesmo que seja null incialmente, ele vai chamar o get novamente e pegar o valor no momento da query
             // ja se primeiro atribuir esse valor para uma variavel, e depois passar na condicao, dai o ef core vai deixar chumbado em toda vida da aplicacao
 
-            int opcao = 4;
+            int opcao = 1;
 
             if (opcao == 1)
             {
